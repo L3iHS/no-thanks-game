@@ -1,2 +1,1 @@
-# repo2
-My first repository
+# no-thanks-game
