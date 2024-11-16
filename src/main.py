@@ -1,6 +1,8 @@
 import sys
 import subprocess
 from PyQt6.QtWidgets import QApplication, QMainWindow, QMessageBox
+from PyQt6.QtGui import QPixmap
+from PyQt6.QtCore import Qt
 from src.screen_ui.start_screen import Ui_MainWindow
 from src.adjustment_start_game import Adjustment_Start_Game, NAME_PLAYERS, NUMBER_PLAYERS
 from src.game import Game
@@ -20,18 +22,8 @@ class Main(QMainWindow, Ui_MainWindow):
         self.start_button.clicked.connect(self.start_game)
         self.start_button.hide()
     
-    def open_pdf(self):
-        # Путь к PDF файлу
-        pdf_path = "data/Rules.pdf"
-        
-        try:
-            # Открываем PDF с помощью системного приложения
-            if sys.platform == "win32":
-                subprocess.run(["start", pdf_path], shell=True)
-            elif sys.platform == "darwin":  # Для macOS
-                subprocess.run(["open", pdf_path])
-        except Exception as e:
-            QMessageBox.warning(self, "Ошибка", f"Не удалось открыть файл: {e}")
+    def open_rules(self):
+        pass
     
     def close_app(self):
         self.close()

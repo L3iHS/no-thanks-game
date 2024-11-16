@@ -1,11 +1,11 @@
 from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QFrame, QLineEdit, QSizePolicy
 from PyQt6.QtCore import Qt
 import sys
-from data.playing_chip import PlayingChip
-from data.playing_card import PlayingCard
-from data.playing_deck import PlayingDeck
+from src.playing_chip import PlayingChip
+from src.playing_card import PlayingCard
+from src.playing_deck import PlayingDeck
 from src.adjustment_start_game import NUMBER_PLAYERS, NAME_PLAYERS
-from data.highlighted_playing_card import PlayingHighlightedCard
+from src.highlighted_playing_card import PlayingHighlightedCard
 NAME_PLAYERS = ['Игрок №1', 'Игрок №22222222', 'Игрок №3']
 
 

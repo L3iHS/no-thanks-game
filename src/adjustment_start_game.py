@@ -1,8 +1,8 @@
 import sys
 from PyQt6.QtWidgets import QApplication, QWidget, QMainWindow, QLineEdit, QPushButton, QSpinBox
 from PyQt6.QtCore import pyqtSignal
-from data.playing_chip import PlayingChip
-from data.playing_card import PlayingCard
+from src.playing_chip import PlayingChip
+from src.playing_card import PlayingCard
 
 
 NUMBER_PLAYERS = 3
