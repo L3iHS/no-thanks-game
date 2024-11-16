@@ -7,7 +7,7 @@ class RuleWindow(QWidget):
     def __init__(self, image1_path, image2_path):
         super().__init__()
         self.setWindowTitle("Правила")
-        self.resize(800, 400)
+        self.resize(1200, 600)  # Размер окна для отображения больших изображений
         
         # Основной layout
         self.layout = QVBoxLayout()
@@ -29,8 +29,9 @@ class RuleWindow(QWidget):
         pixmap1 = QPixmap(image1_path)
         pixmap2 = QPixmap(image2_path)
         
-        self.image_label1.setPixmap(pixmap1.scaled(self.image_label1.size(), Qt.AspectRatioMode.KeepAspectRatio))
-        self.image_label2.setPixmap(pixmap2.scaled(self.image_label2.size(), Qt.AspectRatioMode.KeepAspectRatio))
+        # Масштабируем изображения с более высоким качеством, сохраняем пропорции
+        self.image_label1.setPixmap(pixmap1.scaled(self.image_label1.size(), Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation))
+        self.image_label2.setPixmap(pixmap2.scaled(self.image_label2.size(), Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation))
         
         self.image_label1.setText("")  # Убираем текст
         self.image_label2.setText("")  # Убираем текст
@@ -43,7 +44,7 @@ class RuleWindow(QWidget):
         self.layout.addLayout(self.image_layout)
         self.setLayout(self.layout)
 
-
+        
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     ex = RuleWindow('/Users/iladroskov/Coding/Python/Yandex_Lyceum/no-thanks-game/data/data-1.png', '/Users/iladroskov/Coding/Python/Yandex_Lyceum/no-thanks-game/data/data-2.png')

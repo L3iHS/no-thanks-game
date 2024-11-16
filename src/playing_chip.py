@@ -7,6 +7,8 @@ import sys
 class PlayingChip(QWidget):
     def __init__(self, parent=None, num=0, size=200):
         super().__init__(parent)
+        # print(f'Создан PlayingChip с диаметром: {size}')
+
         self.size = size  # Размер фишки
         self.setFixedSize(size, size)
         self.num = num
@@ -61,9 +63,10 @@ class PlayingChip(QWidget):
         center_font = QFont("American Typewriter", center_font_size)
         painter.setFont(center_font)
 
-        # Цифра в верхней половине карты
-        top_rect = QRectF(0, 0, self.size, self.size)
-        painter.drawText(top_rect, Qt.AlignmentFlag.AlignCenter, f"{self.num}")
+        # Цифра внутри фишки если есть
+        if self.num != '':
+            top_rect = QRectF(0, 0, self.size, self.size)
+            painter.drawText(top_rect, Qt.AlignmentFlag.AlignCenter, f"{self.num}")
         
 
 if __name__ == '__main__':

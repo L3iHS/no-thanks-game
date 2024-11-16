@@ -11,6 +11,10 @@ class PlayingDeck(QWidget):
         self.num = num
         self.size = size
         self.setFixedSize(*size)  # Устанавливаем размер карты
+    
+    def update_num(self, n):
+        self.num = n
+        self.update()
 
     def paintEvent(self, event):
         painter = QPainter(self)
