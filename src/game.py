@@ -8,19 +8,24 @@ from src.playing_card import PlayingCard
 from src.playing_deck import PlayingDeck
 from src.random_chips import RandomChips
 from src.player import Player
-from src.adjustment_start_game import NUMBER_PLAYERS, NAME_PLAYERS
+from src.config import Config
 from src.highlighted_playing_card import PlayingHighlightedCard
-NAME_PLAYERS = ['Игрок №1', 'Игрок №22222222', 'Игрок №3', 'Игрок №4']
-NUMBER_PLAYERS = 4
+# NAME_PLAYERS = ['Игрок №1', 'Игрок №22222222', 'Игрок №3', 'Игрок №4', 'plyaer №5']
+# NUMBER_PLAYERS = 4
+
+# !!!!!!!!          сделать так чтобы после первого применить в начале игры нельзя было тыкать количество игроков
 
 
 class Game(QWidget):
-    def __init__(self, parent=None, num_players=3):
+    def __init__(self, parent=None):
         super().__init__(parent)
+        print(Config.NUMBER_PLAYERS, Config.NAME_PLAYERS)
 
         self.deck = list(random.sample(range(3, 36), 24))
         self.players = []
         self.num_current_player = 0
+        self.last_player = ''
+        # self.last_card = PlayingCard(self, num='', size=(120, 180))
 
         # Главный вертикальный лейаут
         self.main_layout = QVBoxLayout(self)
@@ -33,6 +38,7 @@ class Game(QWidget):
 
         self.card = PlayingCard(self, num='', size=(120, 180))
         self.top_layout.addWidget(self.card)
+        
 
         self.chip = PlayingChip(self, size=180)
         self.top_layout.addWidget(self.chip)
@@ -47,17 +53,17 @@ class Game(QWidget):
 
         self.main_layout.addWidget(self.line)
 
-        for i in range(NUMBER_PLAYERS):
+        for i in range(Config.NUMBER_PLAYERS):   # for i in range(Config.NUMBER_PLAYERS):
             line = QFrame()
             line.setFrameShape(QFrame.Shape.HLine)
             line.setFrameShadow(QFrame.Shadow.Sunken)
 
-            player = Player(self, NAME_PLAYERS[i], 0)
+            player = Player(self, Config.NAME_PLAYERS[i], 0)  # player = Player(self, Config.NAME_PLAYERS[i], 0)
             # player.add_chips(10)
             self.players.append(player)
             self.main_layout.addWidget(player)
             self.main_layout.addWidget(line)
-        
+
         self.who_move = QLineEdit(self)
         self.who_move.setText(f'-> Нажмите для раздачи фишек ->')
         self.who_move.adjustSize()
@@ -98,30 +104,67 @@ class Game(QWidget):
     def start_game(self):
         self.button_start_game.hide()
         self.button_pay_off.show()
+        if self.players[self.num_current_player].num_chips <= 0:
+            self.button_pay_off.setDisabled(True)
+        else:
+            self.button_pay_off.setDisabled(False)
         self.button_take_card.show()
-        self.who_move.setText(f'-> Ход игрока: {NAME_PLAYERS[self.num_current_player]}')
+        self.who_move.setText(f'-> Ход игрока: {Config.NAME_PLAYERS[self.num_current_player]}')
+        self.players[self.num_current_player].active_player()
 
-        self.card.update_num(self.deck[-1])
+        self.card.update_num(self.deck.pop(-1)) # Достаем карту из колоды и кладем на стол
         self.deck_card.update_num(self.deck_card.num - 1)
+        # сокращать делением % self.num_current_player
     
-    def pay_off(self):
-        pass
+    def pay_off(self): # Откупиться
+        # self.button_pay_off.setDisabled(False)
+        self.players[self.num_current_player].add_chips(-1)
+        self.chip.add_chips(1)
 
-    def take_card(self):
-        pass
+        self.num_current_player += 1
+        self.num_current_player %= Config.NUMBER_PLAYERS
+        self.who_move.setText(f'-> Ход игрока: {Config.NAME_PLAYERS[self.num_current_player]}')
+        if self.players[self.num_current_player].num_chips <= 0:
+            self.button_pay_off.setDisabled(True)
+        else:
+            self.button_pay_off.setDisabled(False)
+
+        self.players[self.num_current_player - 1].deactive_player()
+        self.players[self.num_current_player].active_player()
+
+    def take_card(self): # Взять карту
+
+        # self.last_card = PlayingCard(self, num=self.card.num, size=(120, 180))
+        self.players[self.num_current_player].add_chips(self.chip.reset_to_zero())
+        self.button_pay_off.setDisabled(False)
+
+        self.players[self.num_current_player].add_card(self.card.num)
+        # self.last_card = self.card.num 
+        # self.last_card = self.players[self.num_current_player].add_card(self.card.num)
+        # self.last_card.active_backlight(self) ##############
+        if self.last_player != '':
+            self.players[self.last_player].backlight(self.card.num)
+        self.last_player = self.num_current_player
+        self.players[self.num_current_player].sort_cards()
+        self.players[self.num_current_player].backlight(self.card.num)
+        self.card.update_num(self.deck.pop(-1))
+        self.deck_card.update_num(self.deck_card.num - 1)
+        if self.deck_card.num <= 0:
+            pass
+            ##### закончить игруууууу
 
     def give_chips(self):
         # print("Раздача фишек начата")
-        if 3 <= NUMBER_PLAYERS <= 5:
-            for i in range(NUMBER_PLAYERS):
+        if 3 <= Config.NUMBER_PLAYERS <= 5:
+            for i in range(Config.NUMBER_PLAYERS):
                 print(i, self.players[i].name)
                 self.players[i].add_chips(11)
                 # self.players[i].show()
-        elif NUMBER_PLAYERS == 6:
-            for i in range(NUMBER_PLAYERS):
+        elif Config.NUMBER_PLAYERS == 6:
+            for i in range(Config.NUMBER_PLAYERS):
                 self.players[i].add_chips(9)
-        elif NUMBER_PLAYERS == 7:
-            for i in range(NUMBER_PLAYERS):
+        elif Config.NUMBER_PLAYERS == 7:
+            for i in range(Config.NUMBER_PLAYERS):
                 self.players[i].add_chips(7)
 
         self.who_move.setText('-> Нажмите для начала игры ->')
@@ -142,13 +185,14 @@ class Game(QWidget):
         
         # Получаем размер области для рисования
         rect = self.rect()
+        y_height_rectangle = 51 + 105 * Config.NUMBER_PLAYERS # Высота прямоугольника
         
         # Рассчитываем вертикальное положение прямоугольника
-        y_position_rect = rect.bottom() - 472  # Верхний край прямоугольника 470 пикселей от нижнего края
+        y_position_rect = rect.bottom() - y_height_rectangle  # Верхний край прямоугольника 470 пикселей от нижнего края
         
         # Устанавливаем размеры прямоугольника (ширина - вся ширина окна, высота - 470 пикселей)
         rectangle_width = rect.width()
-        rectangle_height = 472  # Высота прямоугольника
+        rectangle_height = y_height_rectangle + 1  # Высота прямоугольника
 
         # Создаем прямоугольник для рисования
         rect_to_draw = QRect(0, y_position_rect, rectangle_width, rectangle_height)
@@ -182,11 +226,9 @@ class Game(QWidget):
         # Рисуем основной текст (по центру)
         painter.drawText(text_rect_center, Qt.AlignmentFlag.AlignTop, "Текущая карта")
 
+
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    window = Game(num_players=5)
+    window = Game()
     window.show()
     sys.exit(app.exec())
-
-
-# Писать чей ход в баре

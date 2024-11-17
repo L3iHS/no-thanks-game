@@ -3,10 +3,9 @@ from PyQt6.QtWidgets import QApplication, QWidget, QMainWindow, QLineEdit, QPush
 from PyQt6.QtCore import pyqtSignal
 from src.playing_chip import PlayingChip
 from src.playing_card import PlayingCard
+from src.config import Config
 
-
-NUMBER_PLAYERS = 3
-NAME_PLAYERS = []
+# поменять в остальных файлах Config.NAME_PLAYERS and Config.NUMBER_PLAYERS
 
 
 class Adjustment_Start_Game(QMainWindow):
@@ -36,6 +35,7 @@ class Adjustment_Start_Game(QMainWindow):
         self.number_players.setRange(3, 7)
         self.number_players.setValue(3)
         self.number_players.lineEdit().setReadOnly(True)
+        self.number_players.setDisabled(False)
 
         self.button_apply1 = QPushButton(self)
         self.button_apply1.setText('Применить')
@@ -62,12 +62,12 @@ class Adjustment_Start_Game(QMainWindow):
         self.button_apply2.hide()
 
     def apply_1(self):
+        Config.update_number_players(int(self.number_players.text()))
         x_start = 10
         y_start = 40
-        self.resize(self.width(), 50 + int(self.number_players.text()) * 30 + 20)
-        NAME_PLAYERS = []
+        self.resize(self.width(), 50 + Config.NUMBER_PLAYERS * 30 + 20)
         
-        for i in range(1, int(self.number_players.text()) + 1):
+        for i in range(1, Config.NUMBER_PLAYERS + 1):
             text = QLineEdit(self)
             text.setText(f'Игрок №{i}')
             text.resize(70, 20)
@@ -84,18 +84,17 @@ class Adjustment_Start_Game(QMainWindow):
 
             self.players.append(input_text)
         
+        self.number_players.setDisabled(True)
         self.button_apply1.hide()
         self.button_apply2.move(self.width() - 100, self.height() - 40)
         self.button_apply2.show()
     
     def apply_2(self):
-        NUMBER_PLAYERS = int(self.number_players.text())
-        
-        for i in range(NUMBER_PLAYERS):
-            NAME_PLAYERS.append(self.players[i].text())
+        for i in range(Config.NUMBER_PLAYERS):
+            Config.NAME_PLAYERS.append(self.players[i].text())
         # создать базу данных с именами игроков
         self.start_button_signal.emit()
-        print(NAME_PLAYERS)
+        print(Config.NAME_PLAYERS)
         self.close()
 
 

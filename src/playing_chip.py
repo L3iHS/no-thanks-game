@@ -12,7 +12,17 @@ class PlayingChip(QWidget):
         self.size = size  # Размер фишки
         self.setFixedSize(size, size)
         self.num = num
-        
+    
+    def add_chips(self, n):
+        self.num += n
+        self.update()
+    
+    def reset_to_zero(self):
+        result = self.num
+        self.num = 0
+        self.update()
+        return result
+
     def paintEvent(self, event):
         painter = QPainter(self)
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)

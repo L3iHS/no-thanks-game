@@ -5,10 +5,9 @@ from src.playing_chip import PlayingChip
 from src.playing_card import PlayingCard
 from src.playing_deck import PlayingDeck
 from src.random_chips import RandomChips
-from src.adjustment_start_game import NUMBER_PLAYERS, NAME_PLAYERS
 from src.highlighted_playing_card import PlayingHighlightedCard
-NAME_PLAYERS = ['Игрок №1', 'Игрок №22222222', 'Игрок №3', 'Игрок №4']
-NUMBER_PLAYERS = 0
+# NAME_PLAYERS = ['Игрок №1', 'Игрок №22222222', 'Игрок №3', 'Игрок №4']
+# NUMBER_PLAYERS = 0
 
 
 class Player(QWidget):
@@ -41,7 +40,11 @@ class Player(QWidget):
         self.name_player.adjustSize()
         self.name_player.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         self.name_player.setFixedWidth(self.name_player.fontMetrics().horizontalAdvance(self.name_player.text()) + 10)
-        self.name_player.setStyleSheet("QLineEdit { border: none; background: transparent; }")
+        self.name_player.setStyleSheet("QLineEdit { "
+                                       "color: black;"
+                                       "border: none;"
+                                        "background: transparent;"
+                                        "}")
         self.name_player.setReadOnly(True)
 
         self.text = QLineEdit(self)
@@ -49,14 +52,68 @@ class Player(QWidget):
         self.text.adjustSize()
         self.text.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         self.text.setFixedWidth(self.text.fontMetrics().horizontalAdvance(self.text.text()) + 10)
-        self.text.setStyleSheet("QLineEdit { border: none; background: transparent; }")
+        self.text.setStyleSheet("QLineEdit { "
+                                       "color: black;"
+                                       "border: none;"
+                                        "background: transparent;"
+                                        "}")
         self.text.setReadOnly(True)
 
         self.layout_n_t.addWidget(self.name_player)
         self.layout_n_t.addWidget(self.text)
 
+    def active_player(self):
+        self.name_player.setStyleSheet("QLineEdit { "
+                                       "color: red;"
+                                       "border: none;"
+                                        "background: transparent;"
+                                        "}")
+        
+    def deactive_player(self):
+        self.name_player.setStyleSheet("QLineEdit { "
+                                       "color: black;"
+                                       "border: none;"
+                                        "background: transparent;"
+                                        "}")
+
+    def backlight(self, n):
+        # Получаем виджеты из лейаута
+        widgets = []
+        while self.card_layout.count():
+            widget_item = self.card_layout.takeAt(0)
+            widget = widget_item.widget()
+            if widget:
+                widgets.append(widget)
+
+        # Добавляем виджеты обратно в лейаут
+        for card in widgets:
+            if card.num == n:
+                card.active_backlight()
+            else:
+                card.deactive_backlight()
+            self.card_layout.addWidget(card)
+
+    def sort_cards(self):
+        # Получаем виджеты из лейаута
+        widgets = []
+        while self.card_layout.count():
+            widget_item = self.card_layout.takeAt(0)
+            widget = widget_item.widget()
+            if widget:
+                widgets.append(widget)
+
+        # Сортируем виджеты по num
+        widgets.sort(key=lambda card: card.num)
+
+        # Добавляем виджеты обратно в лейаут
+        for card in widgets:
+            self.card_layout.addWidget(card)
+
     def add_card(self, n):
-        self.card_layout.addWidget(PlayingCard(num=n, size=(44, 66)))
+        new_card = PlayingCard(num=n, size=(44, 66))
+        self.card_layout.addWidget(new_card)
+        return new_card
+    
 
     def add_chips(self, n):
         self.num_chips += n

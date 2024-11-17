@@ -1,6 +1,6 @@
 import sys
 from PyQt6.QtCore import Qt, QRectF, QPointF
-from PyQt6.QtGui import QPainter, QColor, QFont
+from PyQt6.QtGui import QPainter, QColor, QFont, QPen
 from PyQt6.QtWidgets import QApplication, QWidget
 
 
@@ -11,7 +11,16 @@ class PlayingCard(QWidget):
         self.num = num
         self.size = size
         self.setFixedSize(*size)  # Устанавливаем размер карты
+        self.backlight = False
+
+    def active_backlight(self):
+        self.backlight = True
+        self.update()
     
+    def deactive_backlight(self):
+        self.backlight = False
+        self.update()
+
     def update_num(self, n):
         self.num = n
         self.update()
@@ -26,6 +35,14 @@ class PlayingCard(QWidget):
         painter.setBrush(QColor(222, 184, 135))  # Бежевый цвет
         painter.setPen(Qt.GlobalColor.transparent)
         painter.drawRoundedRect(card_rect, corner_radius, corner_radius)  # Закругленные углы
+
+        # Обводка
+        if self.backlight:
+            corner_radius = min(self.size) * 0.075  # Закругление углов (10% от меньшей стороны карты)
+            card_rect = QRectF(0, 0, self.size[0], self.size[1])
+            painter.setBrush(Qt.GlobalColor.transparent)  # Красный цвет
+            painter.setPen(QPen(QColor(255, 0, 0), self.size[0] / 24))
+            painter.drawRoundedRect(card_rect, corner_radius, corner_radius)  # Закругленные углы
 
         # Внутреннее очертание карты
         corner_radius = min(self.size) * 0.075  # Закругление углов (10% от меньшей стороны карты)
