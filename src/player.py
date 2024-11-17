@@ -108,6 +108,18 @@ class Player(QWidget):
         # Добавляем виджеты обратно в лейаут
         for card in widgets:
             self.card_layout.addWidget(card)
+    
+    def score_num_card(self):
+        score = 0
+        while self.card_layout.count():
+            widget_item = self.card_layout.takeAt(0)
+            widget = widget_item.widget()
+            if widget:
+                try:
+                    score += int(widget.num)
+                except (ValueError):
+                    pass  # Если num отсутствует, ничего не прибавляем
+        return score
 
     def add_card(self, n):
         new_card = PlayingCard(num=n, size=(44, 66))

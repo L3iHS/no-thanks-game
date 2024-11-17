@@ -7,13 +7,14 @@ from src.playing_chip import PlayingChip
 from src.playing_card import PlayingCard
 from src.playing_deck import PlayingDeck
 from src.random_chips import RandomChips
+from src.table_with_results import TableWithResults
 from src.player import Player
 from src.config import Config
 from src.highlighted_playing_card import PlayingHighlightedCard
 # NAME_PLAYERS = ['Игрок №1', 'Игрок №22222222', 'Игрок №3', 'Игрок №4', 'plyaer №5']
 # NUMBER_PLAYERS = 4
 
-# !!!!!!!!          сделать так чтобы после первого применить в начале игры нельзя было тыкать количество игроков
+#  доделать подсчет очков карт идущих подряд
 
 
 class Game(QWidget):
@@ -99,6 +100,19 @@ class Game(QWidget):
         self.button_take_card.clicked.connect(self.take_card)
         self.button_take_card.hide()
 
+        self.button_count_points = QPushButton(self)
+        self.button_count_points.setText('Подсчитать очки')
+        self.bottom_layout.addWidget(self.button_count_points)
+        self.button_count_points.clicked.connect(self.count_points)
+        self.button_count_points.hide()
+        self.card.card_cleared.connect(self.on_card_cleared)
+
+        self.button_print_result = QPushButton(self)
+        self.button_print_result.setText('Вывести результат')
+        self.bottom_layout.addWidget(self.button_print_result)
+        self.button_print_result.clicked.connect(self.print_result)
+        self.button_print_result.hide()
+
         self.main_layout.addLayout(self.bottom_layout)
 
     def start_game(self):
@@ -114,8 +128,38 @@ class Game(QWidget):
 
         self.card.update_num(self.deck.pop(-1)) # Достаем карту из колоды и кладем на стол
         self.deck_card.update_num(self.deck_card.num - 1)
-        # сокращать делением % self.num_current_player
-    
+
+    def on_card_cleared(self):
+        self.button_pay_off.hide()
+        self.button_take_card.hide()
+        self.players[self.num_current_player].deactive_player()
+        self.players[self.num_current_player].backlight('')
+        self.who_move.setText('-> Подсчитать очки ->')
+
+        self.button_count_points.show()
+
+    def print_result(self):
+        self.table.output_results()
+        for i in range(Config.NUMBER_PLAYERS):
+            # print(f'{Config.NAME_PLAYERS[i]}, набравший {places_and_score[i][1]}б , занимает {places_and_score[i][0]} место')
+            place, name, score = self.table.print_result(self.date, Config.NAME_PLAYERS[i])
+            print(f'{name}, набравший {score}б , занимает {place} место')
+        self.table.show()
+        
+    def count_points(self): #########################################
+        self.table = TableWithResults()
+        for i in range(Config.NUMBER_PLAYERS):
+            score_card = self.players[i].score_num_card()
+            score_chips = self.players[i].num_chips
+            score = score_card - score_chips
+            place, self.date = self.table.add_player(Config.NAME_PLAYERS[i], score) # Добовляем результат игрока в базу данных
+        
+        self.button_count_points.hide()
+        self.who_move.setText('-> Вывести результат ->')
+        self.button_print_result.show()
+        
+        
+
     def pay_off(self): # Откупиться
         # self.button_pay_off.setDisabled(False)
         self.players[self.num_current_player].add_chips(-1)
@@ -133,25 +177,23 @@ class Game(QWidget):
         self.players[self.num_current_player].active_player()
 
     def take_card(self): # Взять карту
-
-        # self.last_card = PlayingCard(self, num=self.card.num, size=(120, 180))
         self.players[self.num_current_player].add_chips(self.chip.reset_to_zero())
         self.button_pay_off.setDisabled(False)
 
         self.players[self.num_current_player].add_card(self.card.num)
-        # self.last_card = self.card.num 
-        # self.last_card = self.players[self.num_current_player].add_card(self.card.num)
-        # self.last_card.active_backlight(self) ##############
+
         if self.last_player != '':
             self.players[self.last_player].backlight(self.card.num)
+
         self.last_player = self.num_current_player
         self.players[self.num_current_player].sort_cards()
         self.players[self.num_current_player].backlight(self.card.num)
-        self.card.update_num(self.deck.pop(-1))
-        self.deck_card.update_num(self.deck_card.num - 1)
-        if self.deck_card.num <= 0:
-            pass
-            ##### закончить игруууууу
+
+        if len(self.deck) > 0:
+            self.card.update_num(self.deck.pop(-1))
+            self.deck_card.update_num(self.deck_card.num - 1)
+        else:
+            self.card.update_num('')
 
     def give_chips(self):
         # print("Раздача фишек начата")
@@ -170,8 +212,6 @@ class Game(QWidget):
         self.who_move.setText('-> Нажмите для начала игры ->')
         self.button_give_chips.hide()
         self.button_start_game.show()
-
-
 
     def paintEvent(self, event):
         super().paintEvent(event)

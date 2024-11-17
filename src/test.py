@@ -1,20 +1,35 @@
-from PyQt6.QtWidgets import QApplication
-from PyQt6.QtGui import QFont, QFontMetrics
+import sqlite3
 
-# Создаем экземпляр QApplication (для работы с графикой и шрифтами)
-app = QApplication([])
+# Создаем или подключаемся к существующей базе данных
+# con = sqlite3.connect("data/results.sqlite")
+# cur = con.cursor()
 
-# Устанавливаем шрифт
-font = QFont("Arial", 12)
+# # Создаем таблицу с колонками: место, имя, результат, дата
+# cur.execute('''
+# CREATE TABLE IF NOT EXISTS results (
+#     id INTEGER PRIMARY KEY AUTOINCREMENT,
+#     place TEXT,
+#     name TEXT,
+#     score INTEGER,
+#     date TEXT
+# )
+# ''')
 
-# Получаем метрики шрифта
-font_metrics = QFontMetrics(font)
+# # Сохраняем изменения и закрываем соединение
+# con.commit()
+# con.close()
 
-# Длина текста в пикселях
-text = "Текущий игрок"
-text_width = font_metrics.horizontalAdvance(text)
+# print("База данных успешно создана!")
 
-print(text_width)
 
-# Завершаем приложение
-app.quit()
+
+#################Очистка базы данных
+con = sqlite3.connect("data/results.sqlite")
+cur = con.cursor()
+
+# Удаляем все записи из таблицы
+cur.execute('DELETE FROM results')
+
+# Сохраняем изменения
+con.commit()
+con.close()

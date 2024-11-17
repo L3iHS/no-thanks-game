@@ -7,6 +7,8 @@ from src.screen_ui.start_screen import Ui_MainWindow
 from src.adjustment_start_game import Adjustment_Start_Game
 from src.game import Game
 
+# удалить PlayingHighlightedCard
+
 
 class Main(QMainWindow, Ui_MainWindow):
     def __init__(self):

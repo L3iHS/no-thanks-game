@@ -1,10 +1,12 @@
 import sys
-from PyQt6.QtCore import Qt, QRectF, QPointF
+from PyQt6.QtCore import Qt, QRectF, QPointF, pyqtSignal
 from PyQt6.QtGui import QPainter, QColor, QFont, QPen
 from PyQt6.QtWidgets import QApplication, QWidget
 
 
 class PlayingCard(QWidget):
+    card_cleared = pyqtSignal()
+
     def __init__(self, parent=None, num=1, size=(200, 300)):
         super().__init__(parent)
 
@@ -22,6 +24,9 @@ class PlayingCard(QWidget):
         self.update()
 
     def update_num(self, n):
+        if self.num != '' and n == '':
+            self.card_cleared.emit()  # Посылаем сигнал, когда карта очищена
+
         self.num = n
         self.update()
 
