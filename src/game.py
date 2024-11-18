@@ -15,6 +15,8 @@ from src.highlighted_playing_card import PlayingHighlightedCard
 # NUMBER_PLAYERS = 4
 
 #  доделать подсчет очков карт идущих подряд
+#  выводить локальные результаты игроков и глобальные
+#  неправильно определяется место и сортируются очки
 
 
 class Game(QWidget):
@@ -143,7 +145,7 @@ class Game(QWidget):
         for i in range(Config.NUMBER_PLAYERS):
             # print(f'{Config.NAME_PLAYERS[i]}, набравший {places_and_score[i][1]}б , занимает {places_and_score[i][0]} место')
             place, name, score = self.table.print_result(self.date, Config.NAME_PLAYERS[i])
-            print(f'{name}, набравший {score}б , занимает {place} место')
+            print(f'{name}, набравший {score}б, занимает {place} место')
         self.table.show()
         
     def count_points(self): #########################################

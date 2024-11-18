@@ -1,5 +1,5 @@
 from PyQt6.QtWidgets import QApplication, QMainWindow, QVBoxLayout,\
-QHBoxLayout, QPushButton, QFrame, QLineEdit, QSizePolicy, QTableWidget, QTableWidgetItem
+QHBoxLayout, QPushButton, QFrame, QLineEdit, QSizePolicy, QTableWidget, QTableWidgetItem, QAbstractItemView
 from PyQt6.QtCore import Qt
 import sys
 import sqlite3
@@ -13,11 +13,13 @@ from datetime import datetime
 class TableWithResults(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.resize(500, 400)
+        self.setFixedSize(610, 400)
         self.setWindowTitle("Результаты игроков")
 
         self.table_results = QTableWidget(self)
-        self.table_results.resize(500, 400)
+        self.table_results.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
+        self.table_results.setColumnWidth(3, 150)
+        self.table_results.resize(600, 400)
         self.table_results.setColumnCount(4)
         self.table_results.setHorizontalHeaderLabels(["Место", "Имя", "Результат", "Дата"])
     
@@ -27,7 +29,7 @@ class TableWithResults(QMainWindow):
         date = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
         # Определяем место для нового игрока (по возрастанию результатов)
-        cur.execute('SELECT place, name, score FROM results ORDER BY score ASC')
+        cur.execute('SELECT place, name, score FROM results ORDER BY score DESC, date ASC')
         results = cur.fetchall()
 
         place = 1
@@ -68,9 +70,20 @@ class TableWithResults(QMainWindow):
         # Устанавливаем количество строк в таблице
         self.table_results.setRowCount(len(rows))
 
+        # Находим максимальное количество цифр в месте
+        # max_place = max([len(row[0]) for row in rows])
+        # place_width = len(str(max_place))
+        # print(place_width)
+        place_width = len(str(len(rows)))
+
+        rows.sort(key=lambda x: int(x[0]))
+
         # Заполняем таблицу данными
         for row, row_data in enumerate(rows):
             for col, value in enumerate(row_data):
+                if col == 0:  # Форматируем place
+                    value = int(value)
+                    value = "{:0{width}d}".format(value, width=place_width)
                 self.table_results.setItem(row, col, QTableWidgetItem(str(value)))
 
         # Закрываем соединение
