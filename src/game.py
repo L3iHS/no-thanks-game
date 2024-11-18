@@ -10,13 +10,13 @@ from src.random_chips import RandomChips
 from src.table_with_results import TableWithResults
 from src.player import Player
 from src.config import Config
-from src.highlighted_playing_card import PlayingHighlightedCard
 # NAME_PLAYERS = ['Игрок №1', 'Игрок №22222222', 'Игрок №3', 'Игрок №4', 'plyaer №5']
 # NUMBER_PLAYERS = 4
 
 #  доделать подсчет очков карт идущих подряд
 #  выводить локальные результаты игроков и глобальные
 #  неправильно определяется место и сортируются очки
+#  добавить проверку на уникальность имен в момент создания игроков
 
 
 class Game(QWidget):
@@ -159,8 +159,6 @@ class Game(QWidget):
         self.button_count_points.hide()
         self.who_move.setText('-> Вывести результат ->')
         self.button_print_result.show()
-        
-        
 
     def pay_off(self): # Откупиться
         # self.button_pay_off.setDisabled(False)

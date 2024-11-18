@@ -5,7 +5,6 @@ from src.playing_chip import PlayingChip
 from src.playing_card import PlayingCard
 from src.playing_deck import PlayingDeck
 from src.random_chips import RandomChips
-from src.highlighted_playing_card import PlayingHighlightedCard
 # NAME_PLAYERS = ['Игрок №1', 'Игрок №22222222', 'Игрок №3', 'Игрок №4']
 # NUMBER_PLAYERS = 0
 

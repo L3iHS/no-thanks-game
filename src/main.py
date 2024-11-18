@@ -7,8 +7,6 @@ from src.screen_ui.start_screen import Ui_MainWindow
 from src.adjustment_start_game import Adjustment_Start_Game
 from src.game import Game
 
-# удалить PlayingHighlightedCard
-
 
 class Main(QMainWindow, Ui_MainWindow):
     def __init__(self):
@@ -44,9 +42,6 @@ class Main(QMainWindow, Ui_MainWindow):
         self.setting = Adjustment_Start_Game()  # Создаем экземпляр экрана настройки игры
         self.setting.start_button_signal.connect(self.show_start_button)
         self.setting.show()
-        # if self.setting:
-        #     print('okey')
-        #     self.start_button.show()
     
     def show_start_button(self):
         self.start_button.show()

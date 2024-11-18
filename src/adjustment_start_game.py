@@ -5,8 +5,6 @@ from src.playing_chip import PlayingChip
 from src.playing_card import PlayingCard
 from src.config import Config
 
-# поменять в остальных файлах Config.NAME_PLAYERS and Config.NUMBER_PLAYERS
-
 
 class Adjustment_Start_Game(QMainWindow):
     start_button_signal = pyqtSignal()
@@ -90,9 +88,11 @@ class Adjustment_Start_Game(QMainWindow):
         self.button_apply2.show()
     
     def apply_2(self):
+        name_players = []
         for i in range(Config.NUMBER_PLAYERS):
-            Config.NAME_PLAYERS.append(self.players[i].text())
-        # создать базу данных с именами игроков
+            
+            name_players.append(self.players[i].text())
+        Config.update_name_players(name_players)
         self.start_button_signal.emit()
         print(Config.NAME_PLAYERS)
         self.close()
