@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QFrame, QLineEdit, QSizePolicy
+from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLineEdit, QSizePolicy
 from PyQt6.QtCore import Qt
 import sys
 from src.playing_chip import PlayingChip

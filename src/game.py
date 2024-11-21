@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QApplication, QWidget, QMainWindow, QVBoxLayout, QHBoxLayout, QPushButton, QFrame, QLineEdit, QSizePolicy, QLabel
+from PyQt6.QtWidgets import QApplication, QWidget, QMainWindow, QVBoxLayout, QHBoxLayout, QPushButton, QFrame, QLineEdit, QSizePolicy
 from PyQt6.QtCore import Qt, QRect
 from PyQt6.QtGui import QPainter, QColor, QFont
 import random
@@ -15,7 +15,6 @@ from src.config import Config
 
 #  доделать подсчет очков карт идущих подряд
 #  выводить локальные результаты игроков и глобальные
-#  неправильно определяется место и сортируются очки
 #  добавить проверку на уникальность имен в момент создания игроков
 
 
@@ -144,6 +143,7 @@ class Game(QWidget):
         self.table.output_results()
         for i in range(Config.NUMBER_PLAYERS):
             # print(f'{Config.NAME_PLAYERS[i]}, набравший {places_and_score[i][1]}б , занимает {places_and_score[i][0]} место')
+            
             place, name, score = self.table.print_result(self.date, Config.NAME_PLAYERS[i])
             print(f'{name}, набравший {score}б, занимает {place} место')
         self.table.show()
