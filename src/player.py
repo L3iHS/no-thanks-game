@@ -5,8 +5,6 @@ from src.playing_chip import PlayingChip
 from src.playing_card import PlayingCard
 from src.playing_deck import PlayingDeck
 from src.random_chips import RandomChips
-# NAME_PLAYERS = ['Игрок №1', 'Игрок №22222222', 'Игрок №3', 'Игрок №4']
-# NUMBER_PLAYERS = 0
 
 
 class Player(QWidget):
@@ -110,14 +108,20 @@ class Player(QWidget):
     
     def score_num_card(self):
         score = 0
+        num_list = []
         while self.card_layout.count():
             widget_item = self.card_layout.takeAt(0)
             widget = widget_item.widget()
             if widget:
                 try:
-                    score += int(widget.num)
+                    num_list.append(int(widget.num))
                 except (ValueError):
                     pass  # Если num отсутствует, ничего не прибавляем
+        for i in num_list:
+            if (i - 1) in num_list:
+                continue
+            else:
+                score += i
         return score
 
     def add_card(self, n):

@@ -1,8 +1,6 @@
 import sys
 import subprocess
 from PyQt6.QtWidgets import QApplication, QMainWindow, QMessageBox
-from PyQt6.QtGui import QPixmap
-from PyQt6.QtCore import Qt
 from src.screen_ui.start_screen import Ui_MainWindow
 from src.adjustment_start_game import Adjustment_Start_Game
 from src.game import Game

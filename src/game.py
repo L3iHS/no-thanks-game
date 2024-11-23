@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QApplication, QWidget, QMainWindow, QVBoxLayout, QHBoxLayout, QPushButton, QFrame, QLineEdit, QSizePolicy
+from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QFrame, QLineEdit, QSizePolicy
 from PyQt6.QtCore import Qt, QRect
 from PyQt6.QtGui import QPainter, QColor, QFont
 import random
@@ -10,11 +10,9 @@ from src.random_chips import RandomChips
 from src.table_with_results import TableWithResults
 from src.player import Player
 from src.config import Config
-# NAME_PLAYERS = ['Игрок №1', 'Игрок №22222222', 'Игрок №3', 'Игрок №4', 'plyaer №5']
-# NUMBER_PLAYERS = 4
 
-#  доделать подсчет очков карт идущих подряд
-#  выводить локальные результаты игроков и глобальные
+#  доделать подсчет очков карт идущих подряд  ✔️
+#  выводить локальные результаты игроков и глобальные 
 #  добавить проверку на уникальность имен в момент создания игроков
 
 
@@ -27,7 +25,7 @@ class Game(QWidget):
         self.players = []
         self.num_current_player = 0
         self.last_player = ''
-        # self.last_card = PlayingCard(self, num='', size=(120, 180))
+        self.score_players = []
 
         # Главный вертикальный лейаут
         self.main_layout = QVBoxLayout(self)
@@ -46,7 +44,6 @@ class Game(QWidget):
         self.top_layout.addWidget(self.chip)
 
         self.main_layout.addLayout(self.top_layout)
-        # self.main_layout.addLayout(self.annotation)
         self.main_layout.addStretch()
 
         self.line = QFrame()
@@ -55,12 +52,12 @@ class Game(QWidget):
 
         self.main_layout.addWidget(self.line)
 
-        for i in range(Config.NUMBER_PLAYERS):   # for i in range(Config.NUMBER_PLAYERS):
+        for i in range(Config.NUMBER_PLAYERS):
             line = QFrame()
             line.setFrameShape(QFrame.Shape.HLine)
             line.setFrameShadow(QFrame.Shadow.Sunken)
 
-            player = Player(self, Config.NAME_PLAYERS[i], 0)  # player = Player(self, Config.NAME_PLAYERS[i], 0)
+            player = Player(self, Config.NAME_PLAYERS[i], 0)
             # player.add_chips(10)
             self.players.append(player)
             self.main_layout.addWidget(player)
@@ -142,10 +139,9 @@ class Game(QWidget):
     def print_result(self):
         self.table.output_results()
         for i in range(Config.NUMBER_PLAYERS):
-            # print(f'{Config.NAME_PLAYERS[i]}, набравший {places_and_score[i][1]}б , занимает {places_and_score[i][0]} место')
-            
             place, name, score = self.table.print_result(self.date, Config.NAME_PLAYERS[i])
-            print(f'{name}, набравший {score}б, занимает {place} место')
+            print(f'{name}, набравший {score} б., занимает {place} место среди всех игроков')
+            print(f'{Config.NAME_PLAYERS[i]}, набравший {self.score_players[i]} б., занимает {sorted(self.score_players).index(self.score_players[i]) + 1} место среди игроков за текущим столом')
         self.table.show()
         
     def count_points(self): #########################################
@@ -154,6 +150,7 @@ class Game(QWidget):
             score_card = self.players[i].score_num_card()
             score_chips = self.players[i].num_chips
             score = score_card - score_chips
+            self.score_players.append(score)
             place, self.date = self.table.add_player(Config.NAME_PLAYERS[i], score) # Добовляем результат игрока в базу данных
         
         self.button_count_points.hide()

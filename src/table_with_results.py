@@ -35,7 +35,6 @@ class TableWithResults(QMainWindow):
 
         place = cur.execute("""SELECT MAX(place) FROM results
                             WHERE score <= ?""", (score,)).fetchall()
-        print(place)
         if not place or not place[0][0]:
             place = 1 
         else:
