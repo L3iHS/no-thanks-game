@@ -25,7 +25,6 @@ class Adjustment_Start_Game(QMainWindow):
         self.text1.move(10, 20)
         self.text1.setReadOnly(True)
         self.text1.setStyleSheet("QLineEdit { border: none; background: transparent; }")
-        # 220
 
         self.number_players = QSpinBox(self)
         self.number_players.resize(40, 20)
@@ -90,11 +89,9 @@ class Adjustment_Start_Game(QMainWindow):
     def apply_2(self):
         name_players = []
         for i in range(Config.NUMBER_PLAYERS):
-            
             name_players.append(self.players[i].text())
         Config.update_name_players(name_players)
         self.start_button_signal.emit()
-        print(Config.NAME_PLAYERS)
         self.close()
 
 

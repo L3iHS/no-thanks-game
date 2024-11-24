@@ -11,15 +11,10 @@ from src.table_with_results import TableWithResults
 from src.player import Player
 from src.config import Config
 
-#  доделать подсчет очков карт идущих подряд  ✔️
-#  выводить локальные результаты игроков и глобальные 
-#  добавить проверку на уникальность имен в момент создания игроков
-
 
 class Game(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
-        print(Config.NUMBER_PLAYERS, Config.NAME_PLAYERS)
 
         self.deck = list(random.sample(range(3, 36), 24))
         self.players = []
@@ -58,7 +53,6 @@ class Game(QWidget):
             line.setFrameShadow(QFrame.Shadow.Sunken)
 
             player = Player(self, Config.NAME_PLAYERS[i], 0)
-            # player.add_chips(10)
             self.players.append(player)
             self.main_layout.addWidget(player)
             self.main_layout.addWidget(line)
@@ -144,7 +138,7 @@ class Game(QWidget):
             print(f'{Config.NAME_PLAYERS[i]}, набравший {self.score_players[i]} б., занимает {sorted(self.score_players).index(self.score_players[i]) + 1} место среди игроков за текущим столом')
         self.table.show()
         
-    def count_points(self): #########################################
+    def count_points(self):
         self.table = TableWithResults()
         for i in range(Config.NUMBER_PLAYERS):
             score_card = self.players[i].score_num_card()
@@ -158,7 +152,6 @@ class Game(QWidget):
         self.button_print_result.show()
 
     def pay_off(self): # Откупиться
-        # self.button_pay_off.setDisabled(False)
         self.players[self.num_current_player].add_chips(-1)
         self.chip.add_chips(1)
 
@@ -196,9 +189,7 @@ class Game(QWidget):
         # print("Раздача фишек начата")
         if 3 <= Config.NUMBER_PLAYERS <= 5:
             for i in range(Config.NUMBER_PLAYERS):
-                print(i, self.players[i].name)
                 self.players[i].add_chips(11)
-                # self.players[i].show()
         elif Config.NUMBER_PLAYERS == 6:
             for i in range(Config.NUMBER_PLAYERS):
                 self.players[i].add_chips(9)
@@ -212,55 +203,47 @@ class Game(QWidget):
 
     def paintEvent(self, event):
         super().paintEvent(event)
-        
-        # Создаем объект для рисования
+
         painter = QPainter(self)
-        
         # Устанавливаем цвет и другие параметры рисования для прямоугольника
-        painter.setPen(QColor(0, 0, 0, 100))  # Полупрозрачный цвет для рамки
-        painter.setBrush(QColor(0, 0, 0, 50))  # Полупрозрачная заливка
-        
-        # Получаем размер области для рисования
+        painter.setPen(QColor(0, 0, 0, 100))
+        painter.setBrush(QColor(0, 0, 0, 50))
+
         rect = self.rect()
-        y_height_rectangle = 51 + 105 * Config.NUMBER_PLAYERS # Высота прямоугольника
+        y_height_rectangle = 51 + 105 * Config.NUMBER_PLAYERS
         
         # Рассчитываем вертикальное положение прямоугольника
-        y_position_rect = rect.bottom() - y_height_rectangle  # Верхний край прямоугольника 470 пикселей от нижнего края
+        y_position_rect = rect.bottom() - y_height_rectangle
         
-        # Устанавливаем размеры прямоугольника (ширина - вся ширина окна, высота - 470 пикселей)
         rectangle_width = rect.width()
-        rectangle_height = y_height_rectangle + 1  # Высота прямоугольника
+        rectangle_height = y_height_rectangle + 1
 
-        # Создаем прямоугольник для рисования
         rect_to_draw = QRect(0, y_position_rect, rectangle_width, rectangle_height)
-        
-        # Рисуем прямоугольник
         painter.drawRect(rect_to_draw)
         
-        # Устанавливаем шрифт и цвет текста
         painter.setFont(QFont("Arial", 12))
         painter.setPen(QColor(0, 0, 0, 100))  # Полупрозрачный цвет для текста
         
         # Рассчитываем y-координату для текста
-        y_position_text = rect.top() + 210  # Текст не ниже 210 пикселей от верхней границы
+        y_position_text = rect.top() + 210
         
         # Рассчитываем x-координаты для текстов
-        x_position_text_center = rect.center().x()  # Центр
-        x_position_text_left = int((rect.width() -20 - 420) * (210 / 840)) + 25 # Сдвиг на 200 пикселей влево от центра
-        x_position_text_right = int((rect.width() -20 - 420) * (630 / 840)) + 285  # Сдвиг на 150 пикселей вправо от центра
+        x_position_text_center = rect.center().x()
+        x_position_text_left = int((rect.width() -20 - 420) * (210 / 840)) + 25
+        x_position_text_right = int((rect.width() -20 - 420) * (630 / 840)) + 285
         
         # Определяем области для рисования текстов
         text_rect_left = QRect(x_position_text_left, y_position_text, rect.width() - x_position_text_left, rect.bottom() - y_position_text - rectangle_height)
         text_rect_right = QRect(x_position_text_right, y_position_text, rect.width() - x_position_text_right, rect.bottom() - y_position_text - rectangle_height)
         text_rect_center = QRect(x_position_text_center - 70, y_position_text, rect.width() - (x_position_text_center - 70), rect.bottom() - y_position_text - rectangle_height)
         
-        # Рисуем первый текст (сдвинутый влево)
+        # Рисуем первый текст сдвинутый влево
         painter.drawText(text_rect_left, Qt.AlignmentFlag.AlignTop, "Количество карт\n      в колоде") #"  Количество\nкарт в колоде"
         
-        # Рисуем второй текст (сдвинутый вправо)
+        # Рисуем второй текст сдвинутый вправо
         painter.drawText(text_rect_right, Qt.AlignmentFlag.AlignTop, "Количество фишек \n         на карте")
         
-        # Рисуем основной текст (по центру)
+        # Рисуем основной текст по центру
         painter.drawText(text_rect_center, Qt.AlignmentFlag.AlignTop, "Текущая карта")
 
 

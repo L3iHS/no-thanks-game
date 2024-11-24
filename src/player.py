@@ -99,10 +99,8 @@ class Player(QWidget):
             if widget:
                 widgets.append(widget)
 
-        # Сортируем виджеты по num
         widgets.sort(key=lambda card: card.num)
 
-        # Добавляем виджеты обратно в лейаут
         for card in widgets:
             self.card_layout.addWidget(card)
     
@@ -116,7 +114,7 @@ class Player(QWidget):
                 try:
                     num_list.append(int(widget.num))
                 except (ValueError):
-                    pass  # Если num отсутствует, ничего не прибавляем
+                    pass
         for i in num_list:
             if (i - 1) in num_list:
                 continue
@@ -133,9 +131,6 @@ class Player(QWidget):
     def add_chips(self, n):
         self.num_chips += n
         self.text.setText(f'Фишки:{self.num_chips}')
-        # print(f'Игрок: {self.name}, Фишек добавлено: {n}, Всего фишек: {self.num_chips}')  # Отладочная информация
-
-        # print(self.num_chips)
         self.chips.generating_chips(self.num_chips)
         self.chips.show()
         self.update()

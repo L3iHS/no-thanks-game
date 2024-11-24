@@ -12,7 +12,7 @@ class PlayingCard(QWidget):
 
         self.num = num
         self.size = size
-        self.setFixedSize(*size)  # Устанавливаем размер карты
+        self.setFixedSize(*size)
         self.backlight = False
 
     def active_backlight(self):
@@ -25,7 +25,7 @@ class PlayingCard(QWidget):
 
     def update_num(self, n):
         if self.num != '' and n == '':
-            self.card_cleared.emit()  # Посылаем сигнал, когда карта очищена
+            self.card_cleared.emit()  # Сигнал когда карта очищена
 
         self.num = n
         self.update()
@@ -34,32 +34,31 @@ class PlayingCard(QWidget):
         painter = QPainter(self)
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
 
-        # Основная часть карты с закругленными углами и бежевым цветом
-        corner_radius = min(self.size) * 0.075  # Закругление углов (10% от меньшей стороны карты)
+        # Основная часть карты
+        corner_radius = min(self.size) * 0.075
         card_rect = QRectF(0, 0, *self.size)
-        painter.setBrush(QColor(222, 184, 135))  # Бежевый цвет
+        painter.setBrush(QColor(222, 184, 135))
         painter.setPen(Qt.GlobalColor.transparent)
-        painter.drawRoundedRect(card_rect, corner_radius, corner_radius)  # Закругленные углы
+        painter.drawRoundedRect(card_rect, corner_radius, corner_radius)
 
         # Обводка
         if self.backlight:
-            corner_radius = min(self.size) * 0.075  # Закругление углов (10% от меньшей стороны карты)
+            corner_radius = min(self.size) * 0.075
             card_rect = QRectF(0, 0, self.size[0], self.size[1])
-            painter.setBrush(Qt.GlobalColor.transparent)  # Красный цвет
+            painter.setBrush(Qt.GlobalColor.transparent)
             painter.setPen(QPen(QColor(255, 0, 0), self.size[0] / 24))
-            painter.drawRoundedRect(card_rect, corner_radius, corner_radius)  # Закругленные углы
+            painter.drawRoundedRect(card_rect, corner_radius, corner_radius)
 
         # Внутреннее очертание карты
-        corner_radius = min(self.size) * 0.075  # Закругление углов (10% от меньшей стороны карты)
+        corner_radius = min(self.size) * 0.075
         card_rect = QRectF(self.size[0] * 0.18, self.size[1] * 0.10, self.size[0] * 0.64, self.size[1] * 0.80)
-        painter.setBrush(QColor(138, 102, 66))  # Бежевый темный цвет
+        painter.setBrush(QColor(138, 102, 66))
         painter.setPen(Qt.GlobalColor.transparent)
-        painter.drawRoundedRect(card_rect, corner_radius, corner_radius)  # Закругленные углы
+        painter.drawRoundedRect(card_rect, corner_radius, corner_radius)
 
-        painter.setPen(QColor(0, 0, 0))  # Черный цвет для цифры
+        painter.setPen(QColor(0, 0, 0))
 
-        # Установка шрифта для цифры в углу
-        corner_font_size = int(self.size[0] / 6)  # Пропорциональный размер шрифта для цифры в углу 
+        corner_font_size = int(self.size[0] / 6)
         font = QFont("American Typewriter", corner_font_size)
         painter.setFont(font)
 
@@ -67,11 +66,9 @@ class PlayingCard(QWidget):
         top_left_rect = QRectF(self.size[0] / 40, 0, self.size[0] / 4, self.size[1] / 8)  # Прямоугольник для выравнивания
         painter.drawText(top_left_rect, Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignTop, f"{self.num}")
 
-        # Установка цвета пера для цифры
-        painter.setPen(QColor(0, 0, 0))  # Черный цвет для цифры
+        painter.setPen(QColor(0, 0, 0))
 
-        # Установка шрифта для цифры
-        center_font_size = int(self.size[0] / 2)  # Пропорциональный размер шрифта для центральной цифры
+        center_font_size = int(self.size[0] / 2)
         center_font = QFont("American Typewriter", center_font_size)
         painter.setFont(center_font)
 
@@ -79,26 +76,23 @@ class PlayingCard(QWidget):
         top_rect = QRectF(0, 0, self.size[0], self.size[1] / 2)
         painter.drawText(top_rect, Qt.AlignmentFlag.AlignCenter, f"{self.num}")
 
-        # Цифра в нижней половине карты (перевернутая)
-        # Смещаем нижнюю половину на 180 градусов
+        # Цифра в нижней половине карты
         bottom_rect = QRectF(0, self.size[1] / 2, self.size[0], -self.size[1] / 2)
-        painter.save()  # Сохраняем текущую трансформацию
-        painter.translate(self.size[0], self.size[1])  # Перемещаем в нижний правый угол
-        painter.rotate(180)  # Поворачиваем на 180 градусов
+        painter.save()
+        painter.translate(self.size[0], self.size[1])
+        painter.rotate(180)
         painter.drawText(bottom_rect, Qt.AlignmentFlag.AlignCenter, f"{self.num}")
 
-        # Установка шрифта для цифры в углу
-        corner_font_size = int(self.size[0] / 6)  # Пропорциональный размер шрифта для цифры в углу 
+        corner_font_size = int(self.size[0] / 6)
         font = QFont("American Typewriter", corner_font_size)
         painter.setFont(font)
-        # Цифра в левом верхнем углу карты
-        bottom_right_rect = QRectF(self.size[0] * 1/40, 0, self.size[0], self.size[1])  # Прямоугольник для выравнивания
+        bottom_right_rect = QRectF(self.size[0] * 1/40, 0, self.size[0], self.size[1])
         painter.drawText(bottom_right_rect, Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignTop, f"{self.num}")
 
-        painter.restore()  # Восстанавливаем трансформацию
+        painter.restore()
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     ex = PlayingCard(size=(600, 900), num=47)
-    ex.show()  # Окно будет отображать размер карты
+    ex.show()
     sys.exit(app.exec())
